@@ -13,7 +13,7 @@ __TODO__
 __TODO__
 
 ## Local Setup
-1) Install [vs-code]()
+1) Install [vs-code](https://code.visualstudio.com/download)
 2) Install the [dev-containers](https://code.visualstudio.com/docs/devcontainers/tutorial) extension
 3) Use the `DockerFile` in this repository and `Re-open` as the container: 
 ![Open dev container](image.png)
