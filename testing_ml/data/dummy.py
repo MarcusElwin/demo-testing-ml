@@ -65,16 +65,27 @@ class DataSetFakeFactory(BaseFactory[DataSet]):
     vector = np.random.random((FEATURES, 1))
     label = FuzzyChoice(Labels.list())
 
+class DataSetInvarianceFakeFactory(BaseFactory[DataSet]):
+    class Meta:
+        model = DataSet
+
+    user_id = Faker("uuid4")
+    vector = np.random.uniform(low=0.5, high=1.5, size=(FEATURES, 1))
+    label = FuzzyChoice(Labels.list())
+
 def create_dummy_data(num_rows: int = 10_000) -> pd.DataFrame:
     """Creates a batch of dummy data used for tests and training"""
     return pd.DataFrame(data=DataTypeFakeFactory.create_batch(num_rows))
 
-def create_dummy_feature_data(num_rows: int = 10_000) -> pd.DataFrame:
+def create_dummy_feature_data(num_rows: int = 10_000, invariance: bool = False) -> pd.DataFrame:
     """Creates a batch of dummy data used for tests and training"""
-    return pd.DataFrame(data=DataSetFakeFactory.create_batch(num_rows))
+    if invariance:
+        return pd.DataFrame(data=DataSetInvarianceFakeFactory.create_batch(num_rows))
+    else:
+        return pd.DataFrame(data=DataSetFakeFactory.create_batch(num_rows))
 
-def get_training_data(num_rows: int = 1000) -> np.array:
-    df = create_dummy_feature_data(num_rows)
+def get_training_data(num_rows: int = 1000, invariance: bool = False) -> np.array:
+    df = create_dummy_feature_data(num_rows, invariance)
     features = np.concatenate(df["vector"].values, axis=1)
     target = df["label"].values
     return features, target
